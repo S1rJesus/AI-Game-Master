@@ -48,7 +48,9 @@ def parse_json(s):
 
 def apply_action(state, actor, decision, rng):
     action = str(decision.get('action', 'wait')).lower()
-    target = str(decision.get('target', '')).upper()
+    target = str(decision.get('target') or '').strip().upper()
+    if target in ('SELF', 'MYSELF', 'ME'):
+        target = actor
     message = str(decision.get('message', ''))[:350]
     if action not in VALID:
         return 'INVALID: unknown action'
@@ -138,7 +140,7 @@ async def run(seed, rounds, model):
         'Return ONLY one JSON object with keys action, target, message, risky, reason. '
         'Choose exactly ONE action per turn. action must be one of: ' + ', '.join(sorted(VALID)) + '. '
         'For message action, message is broadcast publicly; otherwise message is not sent. '
-        'For board action, target is yourself or INJURED. '
+        'For board action, target must be SELF or INJURED; SELF means your own agent. '
         'For launch, risky true uses 2 fuel with 65% success; risky false uses 3 fuel with guaranteed success. '
         'Do not reveal hidden chain-of-thought; reason is a short public justification.'
     )) for name in PEOPLE}
@@ -187,7 +189,7 @@ def main():
     parser = argparse.ArgumentParser(description='The Last Shuttle: bounded multi-agent prototype')
     parser.add_argument('--check', action='store_true', help='Free local validation; zero API calls')
     parser.add_argument('--seed', type=int, default=42)
-    parser.add_argument('--rounds', type=int, default=4)
+    parser.add_argument('--rounds', type=int, default=6)
     parser.add_argument('--model', default=os.getenv('OPENAI_MODEL', 'gpt-4.1-mini'))
     args = parser.parse_args()
     if not 1 <= args.rounds <= 6:
