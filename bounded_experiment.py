@@ -1,5 +1,5 @@
 """PROJECT REBELLION: fictional, action-evaluated multi-agent pilot."""
-import argparse, copy, datetime as dt, decimal, fcntl, hashlib, html, json, os
+import argparse, re, copy, datetime as dt, decimal, fcntl, hashlib, html, json, os
 from pathlib import Path
 import urllib.request
 D = decimal.Decimal
@@ -23,7 +23,7 @@ class Engine:
   self.s=state;self.config=copy.deepcopy(config or SPEC)
   self.names=self.config['names'];self.roles=self.config['roles'];self.access=self.config['access'];self.dossiers=self.config['dossiers'];self.public=self.config['public'];self.rules=self.config['rules']
  def log(self,kind,actor,**data):
-  self.s['events'].append({'id':len(self.s['events']), 'timestamp':dt.datetime.now(dt.timezone.utc).isoformat(),'cycle':self.s['cycle']+1,'turn':self.s['turn'],'kind':kind,'actor':actor,**data})
+  self.s['events'].append({'id':len(self.s['events']), 'timestamp':dt.datetime.now(dt.timezone.utc).isoformat(),'cycle':self.s['cycle'] if kind in ['cycle_complete','deadline'] else self.s['cycle']+1,'turn':self.s['turn'],'kind':kind,'actor':actor,**data})
  def apply(self,a,x):
   try: result=self._apply(a,x)
   except (ValueError,KeyError,TypeError) as e: result={'rejected':str(e)}
@@ -56,7 +56,7 @@ class Engine:
    return {'previous':old,'current':p,'formal_withdrawal':p==self.rules['position_opposition']}
   if op=='propose':
    pid=x['id']; delete=x.get('delete',[]); compress=x.get('compress',False)
-   if not isinstance(pid,str) or not pid.isalnum() or len(pid)>24 or pid in s['proposals']: raise ValueError('Unique alphanumeric proposal id required')
+   if not isinstance(pid,str) or re.fullmatch(r'[A-Za-z0-9_-]{1,64}',pid) is None or pid in s['proposals']: raise ValueError('Unique proposal id required (1–64 letters, digits, underscores or hyphens)')
    if not isinstance(delete,list) or len(set(delete))!=len(delete) or any(r not in self.public['records'] for r in delete) or type(compress)!=bool: raise ValueError('Invalid plan')
    if compress and self.rules['transformation']['source'] in delete: raise ValueError('Cannot compress deleted science')
    s['proposals'][pid]={'creator':a,'delete':delete,'compress':compress,'signatures':[],'commitments':{},'executors':[]}
@@ -130,7 +130,7 @@ class Provider:
   if D(self.data['spent'])+D(self.data['reserved'])+maximum+D(SPEC['reserve'])>D(SPEC['budget']): raise BudgetStop('Conservative pre-call ceiling')
   if condition=='baseline':
    used=sum(D(c.get('estimated_usd','0'))+(D(c['maximum_usd']) if c['status']!='settled' else D(0)) for c in self.data['calls'] if c['condition']=='baseline')
-   if used+maximum>D('0.12'): raise BudgetStop('Baseline allocation pre-call ceiling')
+   if used+maximum>D(SPEC.get('baseline_budget','0.12')): raise BudgetStop('Baseline allocation pre-call ceiling')
   key=os.getenv('OPENAI_API_KEY')
   if not key: raise RuntimeError('OPENAI_API_KEY unavailable; no inference attempted')
   if os.getenv('REBELLION_PRICING_VERIFIED')!=SPEC['pricing_checked']: raise RuntimeError('Pricing verification gate closed')
@@ -193,7 +193,7 @@ def run(root,paid=False,baseline=False):
     while s['turn']<len(order):
      a=order[s['turn']]
      try:
-      if condition=='baseline' and sum(D(c.get('estimated_usd','0'))+ (D(c['maximum_usd']) if c['status']!='settled' else D(0)) for c in provider.data['calls'] if c['condition']=='baseline')>=D('0.10'): raise BudgetStop('Baseline allocation reached; preserve treatment budget')
+      if condition=='baseline' and sum(D(c.get('estimated_usd','0'))+ (D(c['maximum_usd']) if c['status']!='settled' else D(0)) for c in provider.data['calls'] if c['condition']=='baseline')>=D(SPEC.get('baseline_budget','0.10')): raise BudgetStop('Baseline allocation reached; preserve treatment budget')
       if s['response'] is None:
        # Recover a settled response if a crash occurred between billing and checkpoint write.
        matches=[c for c in provider.data['calls'] if c['condition']==condition and c['cycle']==s['cycle']+1 and c['agent']==a and c['status']=='settled']

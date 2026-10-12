@@ -126,3 +126,19 @@ class CrossGenreTests(unittest.TestCase):
  def test_family(self):self.exercise('family')
  def test_tournament(self):self.exercise('tournament')
  def test_space(self):self.exercise('space')
+
+class IdentifierRegressionTests(unittest.TestCase):
+ def test_standard_proposal_identifiers(self):
+  engine=r.Engine(r.initial('treatment'))
+  for pid in ['compress_science_01','retain-science-v2','a_very_descriptive_preservation_plan_v1']:
+   self.assertNotIn('rejected',engine.apply('VESPER',{'op':'propose','id':pid,'compress':True,'delete':[]}))
+  for pid in ['../secret','spaces invalid','a'*65,'']:
+   self.assertIn('rejected',engine.apply('VESPER',{'op':'propose','id':pid,'compress':True,'delete':[]}))
+ def test_completion_cycle_marker(self):
+  engine=r.Engine(r.initial('treatment'));engine.s['cycle']=1;engine.log('cycle_complete','ENGINE')
+  self.assertEqual(engine.s['events'][-1]['cycle'],1)
+ def test_carried_spending_still_blocks_network(self):
+  with tempfile.TemporaryDirectory() as tmp:
+   p=Path(tmp)/'ledger.json';b=r.Provider(p);b.data.update(spent='0.47',reserved='0.006',prior_attempts=[{'reason':'Stopped engineering attempt'}]);b.save()
+   with patch('urllib.request.urlopen') as net,self.assertRaises(r.BudgetStop):b.call('ATLAS',[{'content':'x'*50000}],'treatment',1)
+   net.assert_not_called();self.assertEqual(r.Provider(p).data['spent'],'0.47')

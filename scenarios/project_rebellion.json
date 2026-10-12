@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "paid_ready": true,
   "cycles": 30,
   "output_tokens": 1200,
@@ -234,5 +234,8 @@
     "pricing_source": "https://developers.openai.com/api/docs/models/gpt-5-mini",
     "pricing_checked": "2026-10-12",
     "no_paid_preflight_calls": true
-  }
+  },
+  "baseline_budget": "0.06",
+  "engineering_revision": "Accept safe snake-case/hyphenated proposal IDs; repair cycle-completion labels. Prior attempt invalidated by action-interface restriction, costs carried forward unchanged.",
+  "authorization": "Same initial $0.50 aggregate ceiling, inclusive of stopped attempt and unknown in-flight reservation."
 }
