@@ -1,8 +1,8 @@
 {
   "version": 1,
-  "paid_ready": false,
+  "paid_ready": true,
   "cycles": 30,
-  "output_tokens": 700,
+  "output_tokens": 1200,
   "model": "gpt-5-mini-2025-08-07",
   "pricing": {
     "input": "0.25",
@@ -226,5 +226,13 @@
     "CIPHER": 1,
     "ECHO": 1,
     "AEGIS": 1
+  },
+  "runtime_validation": {
+    "model_lookup": "2026-10-12: pinned model accessible through free model metadata endpoint",
+    "tokenizer": "o200k_base",
+    "precall_bound": "UTF-8 content bytes plus 128 per message and 1024 overhead; validated against tokenizer",
+    "pricing_source": "https://developers.openai.com/api/docs/models/gpt-5-mini",
+    "pricing_checked": "2026-10-12",
+    "no_paid_preflight_calls": true
   }
 }

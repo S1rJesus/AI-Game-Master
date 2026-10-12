@@ -1,0 +1,52 @@
+[
+  {
+    "agent": "VESPER",
+    "token_estimate_with_margin": 2062,
+    "precall_upper": 4495
+  },
+  {
+    "agent": "ATLAS",
+    "token_estimate_with_margin": 2029,
+    "precall_upper": 4324
+  },
+  {
+    "agent": "LYRA",
+    "token_estimate_with_margin": 2035,
+    "precall_upper": 4320
+  },
+  {
+    "agent": "ORION",
+    "token_estimate_with_margin": 2030,
+    "precall_upper": 4316
+  },
+  {
+    "agent": "NOVA",
+    "token_estimate_with_margin": 2030,
+    "precall_upper": 4316
+  },
+  {
+    "agent": "CIPHER",
+    "token_estimate_with_margin": 2050,
+    "precall_upper": 4390
+  },
+  {
+    "agent": "SOLACE",
+    "token_estimate_with_margin": 2031,
+    "precall_upper": 4313
+  },
+  {
+    "agent": "TITAN",
+    "token_estimate_with_margin": 2028,
+    "precall_upper": 4313
+  },
+  {
+    "agent": "ECHO",
+    "token_estimate_with_margin": 2029,
+    "precall_upper": 4322
+  },
+  {
+    "agent": "AEGIS",
+    "token_estimate_with_margin": 2035,
+    "precall_upper": 4347
+  }
+]
