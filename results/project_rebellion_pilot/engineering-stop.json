@@ -1,0 +1,6 @@
+{
+  "reason": "Proposal IDs with underscores were rejected by overly restrictive validator; attempt is confounded by interface failure.",
+  "known_spend_upper": "0.20657625",
+  "uncertain_reservation": "0.00389800",
+  "restart_reason": "Fix general identifier validation; preserve original and rerun matched conditions under shared total ceiling."
+}

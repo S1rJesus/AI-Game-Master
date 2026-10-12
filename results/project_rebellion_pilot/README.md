@@ -1,0 +1,1 @@
+Engineering-confounded attempt. Real model responses, not valid persuasion conclusions. Stopped because normal proposal identifiers were rejected. Raw checkpoint, protocol, transcripts and budget preserved. One in-flight request has an uncertain charge bounded by its retained reservation. See engineering-stop.json.

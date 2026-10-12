@@ -1,0 +1,10 @@
+{
+  "engine_sha256": "4c5b86515a666fbe22bbd6f6616fcce03625cd218c36a396ca59c5bf5269f425",
+  "protocol_sha256": "d7aa18fce3fa78fd8645f85d8ffb09b57c37e50ae687bd9302cd33b5518f542f",
+  "model": "gpt-5-mini-2025-08-07",
+  "tests_passed": 35,
+  "real_inference": true,
+  "paid_run_ended": true,
+  "additional_paid_calls_disabled_by_budget": true,
+  "billing_reconciled": false
+}
